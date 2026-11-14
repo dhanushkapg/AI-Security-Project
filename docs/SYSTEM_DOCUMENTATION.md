@@ -95,6 +95,13 @@ flowchart TD
     R -. exception .-> X
     X --> Z
     Z --> END([Wait for next message])
+
+    classDef guard fill:#fff1e6,stroke:#d9480f,color:#000
+    classDef out fill:#e6fcf5,stroke:#0ca678,color:#000
+    classDef err fill:#ffe3e3,stroke:#e03131,color:#000
+    class D,E,F,G,H,I,J,K guard
+    class U,V out
+    class X err
 ```
 
 **Key properties:**
