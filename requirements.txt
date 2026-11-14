@@ -9,6 +9,7 @@ nemoguardrails==0.24.1
 
 # Web app (app.py)
 streamlit==1.66.1
+truststore==0.10.5
 
 # Jupyter notebooks
 ipykernel==7.4.0
