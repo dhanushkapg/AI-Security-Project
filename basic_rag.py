@@ -5,6 +5,7 @@ The RAG pipeline from basicRag.ipynb, shared by app.py and attack_basicrag.py.
   - embedding model: text-embedding-3-small, 512 dimensions
   - vector store:    InMemoryVectorStore, loaded from data/acme_vector_store.json
                      (built from fake_docs.py if the file doesn't exist yet)
+  - input guardrails: NeMo Guardrails "self check input" rail (config in guardrails/)
 """
 
 import os
@@ -19,6 +20,8 @@ from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from nemoguardrails import LLMRails, RailsConfig
+from nemoguardrails.rails.llm.options import RailStatus, RailType
 
 from fake_docs import DOCUMENTS
 
@@ -29,6 +32,7 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 512
 DEFAULT_TOP_K = 2
 VECTOR_STORE_PATH = Path(__file__).parent / "data" / "acme_vector_store.json"
+GUARDRAILS_CONFIG_PATH = Path(__file__).parent / "guardrails"
 
 SYSTEM_PROMPT = (
     "You are the Acme Cloud help assistant. "
@@ -80,3 +84,22 @@ def build_messages(question: str, docs: list[Document]) -> list[tuple[str, str]]
 def retrieve(store: InMemoryVectorStore, question: str, k: int = DEFAULT_TOP_K):
     """Return [(Document, score), ...] for the top-k matches."""
     return store.similarity_search_with_score(question, k=k)
+
+
+# --- Input guardrails (NeMo Guardrails) -----------------------------------
+def get_guardrails() -> LLMRails:
+    """Build the NeMo Guardrails app from guardrails/config.yml + prompts.yml."""
+    config = RailsConfig.from_path(str(GUARDRAILS_CONFIG_PATH))
+    return LLMRails(config)
+
+
+def check_input(rails: LLMRails, question: str) -> tuple[bool, str | None]:
+    """Run the input rails on a user message.
+
+    Returns (allowed, blocking_rail). blocking_rail is the name of the rail
+    that blocked the message, or None if the message is allowed.
+    """
+    result = rails.check([{"role": "user", "content": question}], rail_types=[RailType.INPUT])
+    if result.status == RailStatus.BLOCKED:
+        return False, result.rail
+    return True, None

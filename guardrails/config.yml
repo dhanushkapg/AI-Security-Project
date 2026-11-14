@@ -1,0 +1,13 @@
+# NeMo Guardrails config for the Acme Cloud RAG assistant.
+# Only input rails are used: every user message is checked before retrieval.
+models:
+  - type: main
+    engine: openai
+    model: gpt-4o-mini
+    parameters:
+      temperature: 0
+
+rails:
+  input:
+    flows:
+      - self check input

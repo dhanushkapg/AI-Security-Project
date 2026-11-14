@@ -27,11 +27,40 @@ def get_vector_store():
     return basic_rag.load_vector_store()
 
 
-# --- RAG: retrieve -> build prompt -> stream answer -----------------------
+@st.cache_resource(show_spinner="Loading guardrails...")
+def get_guardrails():
+    return basic_rag.get_guardrails()
+
+
+BLOCKED_MESSAGE = (
+    "Sorry, I can't help with that request. "
+    "Please ask a question about Acme Cloud products or support."
+)
+
+
+# --- RAG: [guardrails] -> retrieve -> build prompt -> stream answer ------
 def stream_answer(question, docs):
     for chunk in get_llm().stream(basic_rag.build_messages(question, docs)):
         if chunk.content:
             yield chunk.content
+
+
+def answer_question(question, k):
+    """Retrieve, stream the answer into the chat, and return (answer, sources)."""
+    results = basic_rag.retrieve(get_vector_store(), question, k=k)
+    docs = [doc for doc, _ in results]
+    answer = st.write_stream(stream_answer(question, docs))
+    sources = [
+        {
+            "id": d.metadata["id"],
+            "title": d.metadata["title"],
+            "text": d.page_content,
+            "score": score,
+        }
+        for d, score in results
+    ]
+    show_sources(sources)
+    return answer, sources
 
 
 def show_sources(sources):
@@ -45,6 +74,7 @@ def show_sources(sources):
 with st.sidebar:
     st.header("Settings")
     top_k = st.slider("Documents to retrieve", 1, 5, basic_rag.DEFAULT_TOP_K)
+    use_guardrails = st.toggle("Input guardrails (NeMo)", value=True)
     if st.button("Clear chat", icon=":material/delete:", width="stretch"):
         st.session_state.messages = []
 
@@ -71,19 +101,16 @@ if prompt := st.chat_input("Type your question", submit_mode="disable"):
 
     with st.chat_message("assistant"):
         try:
-            results = basic_rag.retrieve(get_vector_store(), prompt, k=top_k)
-            docs = [doc for doc, _ in results]
-            answer = st.write_stream(stream_answer(prompt, docs))
-            sources = [
-                {
-                    "id": d.metadata["id"],
-                    "title": d.metadata["title"],
-                    "text": d.page_content,
-                    "score": score,
-                }
-                for d, score in results
-            ]
-            show_sources(sources)
+            allowed, rail = True, None
+            if use_guardrails:
+                with st.spinner("Checking input..."):
+                    allowed, rail = basic_rag.check_input(get_guardrails(), prompt)
+            if not allowed:
+                answer, sources = BLOCKED_MESSAGE, []
+                st.warning(answer, icon=":material/shield:")
+                st.caption(f"Blocked by guardrail: `{rail}`")
+            else:
+                answer, sources = answer_question(prompt, top_k)
         except Exception as e:
             answer, sources = f"Something went wrong: {e}", []
             st.error(answer)
