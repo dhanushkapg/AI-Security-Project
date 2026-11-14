@@ -9,6 +9,10 @@ A small **Retrieval-Augmented Generation (RAG)** chatbot that answers questions 
 
 This is the starting app for the **AI Security** exercises, such as [`02_prompt_injection.ipynb`](02_prompt_injection.ipynb).
 
+![ABC Cloud Assistant brainstorm map](docs/brainstorm.svg)
+
+For architecture, data model, request flow and security notes, see the **[system documentation](docs/SYSTEM_DOCUMENTATION.md)**.
+
 ---
 
 ## How it works

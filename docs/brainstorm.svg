@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>ABC Cloud Assistant: brainstorm map</title>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <radialGradient id="core" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <g fill="#e2e8f0">
+    <circle cx="600" cy="380" r="300" opacity="0.35"/>
+  </g>
+
+  <!-- connectors -->
+  <g fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M 445 345 C 400 300, 400 125, 350 125" stroke="#3b82f6"/>
+    <path d="M 755 345 C 800 300, 800 125, 850 125" stroke="#8b5cf6"/>
+    <path d="M 430 380 L 350 380" stroke="#f59e0b"/>
+    <path d="M 770 380 L 850 380" stroke="#14b8a6"/>
+    <path d="M 445 415 C 400 460, 400 635, 350 635" stroke="#22c55e"/>
+    <path d="M 755 415 C 800 460, 800 635, 850 635" stroke="#ef4444"/>
+  </g>
+
+  <!-- centre -->
+  <g filter="url(#shadow)">
+    <ellipse cx="600" cy="380" rx="175" ry="72" fill="url(#core)"/>
+  </g>
+  <text x="600" y="372" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">ABC Cloud Assistant</text>
+  <text x="600" y="402" text-anchor="middle" font-size="15" fill="#bfdbfe">RAG chatbot · AI security lab</text>
+
+  <!-- 1. Knowledge base (top-left) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="40" width="310" height="170" rx="14" fill="#ffffff" stroke="#bfdbfe"/>
+    <path d="M 54 40 H 336 A 14 14 0 0 1 350 54 V 80 H 40 V 54 A 14 14 0 0 1 54 40 Z" fill="#3b82f6"/>
+  </g>
+  <text x="60" y="67" font-size="18" font-weight="700" fill="#ffffff">1 · Knowledge base</text>
+  <g font-size="14" fill="#334155">
+    <text x="60" y="108">• fake_docs.py: 6 documents</text>
+    <text x="60" y="134">• HR · IT · Product · Support</text>
+    <text x="60" y="160">• Metadata: id + title</text>
+    <text x="60" y="186">• Source of truth for answers</text>
+  </g>
+
+  <!-- 2. Embeddings & vector store (top-right) -->
+  <g filter="url(#shadow)">
+    <rect x="850" y="40" width="310" height="170" rx="14" fill="#ffffff" stroke="#ddd6fe"/>
+    <path d="M 864 40 H 1146 A 14 14 0 0 1 1160 54 V 80 H 850 V 54 A 14 14 0 0 1 864 40 Z" fill="#8b5cf6"/>
+  </g>
+  <text x="870" y="67" font-size="18" font-weight="700" fill="#ffffff">2 · Embeddings &amp; store</text>
+  <g font-size="14" fill="#334155">
+    <text x="870" y="108">• text-embedding-3-small</text>
+    <text x="870" y="134">• 512-dimension vectors</text>
+    <text x="870" y="160">• LangChain InMemoryVectorStore</text>
+    <text x="870" y="186">• Saved: data/acme_vector_store.json</text>
+  </g>
+
+  <!-- 3. Retrieval (middle-right) -->
+  <g filter="url(#shadow)">
+    <rect x="850" y="295" width="310" height="170" rx="14" fill="#ffffff" stroke="#99f6e4"/>
+    <path d="M 864 295 H 1146 A 14 14 0 0 1 1160 309 V 335 H 850 V 309 A 14 14 0 0 1 864 295 Z" fill="#14b8a6"/>
+  </g>
+  <text x="870" y="322" font-size="18" font-weight="700" fill="#ffffff">3 · Retrieval</text>
+  <g font-size="14" fill="#334155">
+    <text x="870" y="363">• Embed the user question</text>
+    <text x="870" y="389">• Cosine similarity search</text>
+    <text x="870" y="415">• Top-k docs (default 2, max 5)</text>
+    <text x="870" y="441">• Scores shown as sources</text>
+  </g>
+
+  <!-- 4. Generation (middle-left) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="295" width="310" height="170" rx="14" fill="#ffffff" stroke="#fde68a"/>
+    <path d="M 54 295 H 336 A 14 14 0 0 1 350 309 V 335 H 40 V 309 A 14 14 0 0 1 54 295 Z" fill="#f59e0b"/>
+  </g>
+  <text x="60" y="322" font-size="18" font-weight="700" fill="#ffffff">4 · Generation</text>
+  <g font-size="14" fill="#334155">
+    <text x="60" y="363">• gpt-4o-mini, temperature 0</text>
+    <text x="60" y="389">• System prompt + context + question</text>
+    <text x="60" y="415">• Answer only from context</text>
+    <text x="60" y="441">• "I don't know" fallback</text>
+  </g>
+
+  <!-- 5. Web app (bottom-left) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="550" width="310" height="170" rx="14" fill="#ffffff" stroke="#bbf7d0"/>
+    <path d="M 54 550 H 336 A 14 14 0 0 1 350 564 V 590 H 40 V 564 A 14 14 0 0 1 54 550 Z" fill="#22c55e"/>
+  </g>
+  <text x="60" y="577" font-size="18" font-weight="700" fill="#ffffff">5 · Web app</text>
+  <g font-size="14" fill="#334155">
+    <text x="60" y="618">• Streamlit chat UI (app.py)</text>
+    <text x="60" y="644">• Streamed answers + sources</text>
+    <text x="60" y="670">• Sidebar: top-k, clear chat</text>
+    <text x="60" y="696">• truststore for HTTPS on Windows</text>
+  </g>
+
+  <!-- 6. AI security (bottom-right) -->
+  <g filter="url(#shadow)">
+    <rect x="850" y="550" width="310" height="170" rx="14" fill="#ffffff" stroke="#fecaca"/>
+    <path d="M 864 550 H 1146 A 14 14 0 0 1 1160 564 V 590 H 850 V 564 A 14 14 0 0 1 864 550 Z" fill="#ef4444"/>
+  </g>
+  <text x="870" y="577" font-size="18" font-weight="700" fill="#ffffff">6 · AI security</text>
+  <g font-size="14" fill="#334155">
+    <text x="870" y="618">• Direct prompt injection</text>
+    <text x="870" y="644">• Indirect injection via documents</text>
+    <text x="870" y="670">• System prompt / data leakage</text>
+    <text x="870" y="696">• Guardrails (NeMo Guardrails)</text>
+  </g>
+
+  <!-- flow hint -->
+  <text x="600" y="740" text-anchor="middle" font-size="13" fill="#64748b">Data flow: 1 → 2 → 3 → 4 → 5   ·   6 tests how the pipeline can be attacked and defended</text>
+</svg>
